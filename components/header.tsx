@@ -58,8 +58,8 @@ export async function Header() {
       </div>
       <div className="flex items-center justify-end space-x-2">
       {session?.user ? (
-          <LoginButton />
-        ) : ("")}
+          ""
+        ) : (<LoginButton />)}
         <a
           target="_blank"
           href="https://github.com/soyrvelez/organized-chatbot"
