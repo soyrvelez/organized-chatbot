@@ -14,6 +14,7 @@ import { UserMenu } from '@/components/user-menu'
 import { SidebarMobile } from './sidebar-mobile'
 import { SidebarToggle } from './sidebar-toggle'
 import { ChatHistory } from './chat-history'
+import { LoginButton } from './login-button'
 
 async function UserOrLogin() {
   const session = await auth()
@@ -55,6 +56,7 @@ export function Header() {
         </React.Suspense>
       </div>
       <div className="flex items-center justify-end space-x-2">
+        <LoginButton />
         <a
           target="_blank"
           href="https://github.com/soyrvelez/organized-chatbot"
@@ -62,7 +64,7 @@ export function Header() {
           className={cn(buttonVariants({ variant: 'outline' }))}
         >
           <IconGitHub />
-          <span className="hidden ml-2 md:flex">GitHub</span>
+          <span className="hidden ml-2 md:flex">View Repo</span>
         </a>
       </div>
     </header>
