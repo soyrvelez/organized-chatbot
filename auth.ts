@@ -28,7 +28,7 @@ export const {
     session: async ({ session, token }) => {
       if (session?.user && token?.id) {
         session.user.id = String(token.id)
-        // await checkOrCreateUser(session.user.id)
+        await checkOrCreateUser(session.user.id)
       }
       return session;
     },
