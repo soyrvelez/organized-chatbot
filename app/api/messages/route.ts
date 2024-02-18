@@ -7,6 +7,11 @@ interface Message {
   content: string;
 }
 
+interface Chat {
+  id: string;
+  messages: Message[];
+}
+
 // GET route to fetch all messages for a given chat ID
 export async function GET(req: Request) {
   const url = new URL(req.url);
@@ -17,20 +22,14 @@ export async function GET(req: Request) {
   }
 
   try {
-    const chatDataString = await kv.hgetall(`chat:${chatId}`);
-    if (!chatDataString || Object.keys(chatDataString).length === 0) {
+    const chatData = await kv.hgetall(`chat:${chatId}`);
+    if (!chatData || Object.keys(chatData).length === 0) {
       return new Response("Chat not found", { status: 404 });
     }
 
-    let chatData: { messages: Message[] };
-    try {
-      chatData = JSON.parse(chatDataString as unknown as string);
-    } catch (parseError) {
-      console.error("Error parsing chat data:", parseError);
-      return new Response("Error parsing chat data", { status: 500 });
-    }
+    const chat: Chat = chatData as unknown as Chat;
 
-    return new Response(JSON.stringify(chatData.messages), {
+    return new Response(JSON.stringify(chat.messages), {
       status: 200,
       headers: { 'Content-Type': 'application/json' }
     });
