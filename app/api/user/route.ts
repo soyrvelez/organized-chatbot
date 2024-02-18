@@ -9,8 +9,8 @@ export async function GET(req: Request) {
   const filter = url.searchParams.get("filter");
 
   try {
-    // Fetch a single user by ID
     if (userId) {
+      // Fetch a single user by ID
       const user = await prisma.user.findUnique({
         where: { id: userId },
         include: { preferences: true }
@@ -24,32 +24,38 @@ export async function GET(req: Request) {
         status: 200,
         headers: { 'Content-Type': 'application/json' }
       });
-    }
-
-    // Fetch all users or apply specific filters
-    let users;
-    if (filter === "singlePreference") {
-      users = await prisma.user.findMany({
-        where: { preferences: { some: {} } },
-        include: { preferences: true }
-      });
-    } else if (filter === "multiplePreferences") {
-      users = await prisma.user.findMany({
-        where: { preferences: { some: {} } },
-        include: { preferences: true }
-      });
-
-      users = users.filter(user => user.preferences.length > 1);
     } else {
-      users = await prisma.user.findMany({
-        include: { preferences: true }
+      let users;
+      switch (filter) {
+        case "singlePreference":
+          // Fetch users with exactly one preference
+          users = await prisma.user.findMany({
+            where: { preferences: { some: {} } },
+            include: { preferences: true }
+          });
+          users = users.filter(user => user.preferences.length === 1);
+          break;
+        case "multiplePreferences":
+          // Fetch users with more than one preference
+          users = await prisma.user.findMany({
+            where: { preferences: { some: {} } },
+            include: { preferences: true }
+          });
+          users = users.filter(user => user.preferences.length > 1);
+          break;
+        default:
+          // Fetch all users
+          users = await prisma.user.findMany({
+            include: { preferences: true }
+          });
+          break;
+      }
+
+      return new Response(JSON.stringify(users), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
       });
     }
-
-    return new Response(JSON.stringify(users), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' }
-    });
   } catch (error) {
     if (error instanceof Error) {
       return new Response(JSON.stringify({ error: error.message }), {
@@ -65,6 +71,7 @@ export async function GET(req: Request) {
     }
   }
 }
+
 
 // POST route to create a user
 export async function POST(req: Request) {
