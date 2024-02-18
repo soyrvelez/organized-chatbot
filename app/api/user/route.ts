@@ -2,8 +2,6 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export const runtime = 'edge';
-
 // GET route for various user queries
 export async function GET(req: Request) {
   const url = new URL(req.url);
