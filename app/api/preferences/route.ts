@@ -57,6 +57,7 @@ export async function GET(req: Request) {
   const url = new URL(req.url);
   const id = url.searchParams.get("id");
   const userId = url.searchParams.get("userId");
+  const model = url.searchParams.get("model");
 
   try {
     // Fetch a single preference by ID
@@ -88,6 +89,22 @@ export async function GET(req: Request) {
 
       if (!preferences || preferences.length === 0) {
         return new Response("No preferences found for the given user", { status: 404 });
+      }
+
+      return new Response(JSON.stringify(preferences), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    // Fetch all preferences for a given model
+    else if (model) {
+      const preferences = await prisma.preferences.findMany({
+        where: { preferredModel: model }
+      });
+
+      if (!preferences || preferences.length === 0) {
+        return new Response("No preferences found for the given model", { status: 404 });
       }
 
       return new Response(JSON.stringify(preferences), {
