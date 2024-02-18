@@ -4,22 +4,26 @@ const prisma = new PrismaClient();
 
 // Create a preference
 export async function POST(req: Request) {
+  const body = await req.json();
+  const { title, preferredModel, temperature, active, userId } = body;
+
+  if (!userId) {
+    return new Response("User ID is required", { status: 400 });
+  }
+
   try {
-    const body = await req.json();
-    const { title, preferredModel, temperature, active, userId } = body;
-
-    if (!userId) {
-      return new Response("User ID is required", { status: 400 });
-    }
-
-    const userExists = await prisma.user.findUnique({
-      where: { id: userId }
+    // Set all existing preferences for the user to inactive
+    await prisma.preferences.updateMany({
+      where: {
+        userId: userId,
+        active: true
+      },
+      data: {
+        active: false
+      }
     });
 
-    if (!userExists) {
-      return new Response("User not found", { status: 404 });
-    }
-
+    // Create the new preference
     const newPreference = await prisma.preferences.create({
       data: {
         title: title || "Default",
