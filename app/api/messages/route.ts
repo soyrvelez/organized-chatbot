@@ -18,21 +18,19 @@ export async function GET(req: Request) {
   }
 
   try {
-    // Directly use the chat data as an object
     const chatData = await kv.hgetall(`chat:${chatId}`);
     if (!chatData || Object.keys(chatData).length === 0) {
       return new Response("Chat not found", { status: 404 });
     }
 
-    // Extract messages directly from the chatData object
-    const messages: Message[] = chatData.messages;
+    // Assuming chatData is already an object
+    const chat: { messages: Message[] } = chatData as unknown as { messages: Message[] };
+    const messages = chat.messages;
 
-    // Filter messages by role if the role parameter is provided
-    if (role && ['user', 'assistant'].includes(role)) {
-      messages = messages.filter(message => message.role === role);
-    }
+    // Apply role filter if provided
+    const filteredMessages = role ? messages.filter(message => message.role === role) : messages;
 
-    return new Response(JSON.stringify(messages), {
+    return new Response(JSON.stringify(filteredMessages), {
       status: 200,
       headers: { 'Content-Type': 'application/json' }
     });
