@@ -113,7 +113,6 @@ export async function GET(req: Request) {
       });
     }
 
-    // No valid query parameters provided
     else {
       return new Response("Query parameter 'id' or 'userId' is required", { status: 400 });
     }
@@ -125,6 +124,49 @@ export async function GET(req: Request) {
       });
     } else {
       return new Response("An unknown error occurred", { status: 500 });
+    }
+  }
+}
+
+// DELETE route to delete a preference by ID
+export async function DELETE(req: Request) {
+  const url = new URL(req.url);
+  const idParam = url.searchParams.get("id");
+
+  if (!idParam) {
+    return new Response("Preference ID is required", { status: 400 });
+  }
+
+  const id = parseInt(idParam, 10);
+  if (isNaN(id)) {
+    return new Response("Invalid preference ID", { status: 400 });
+  }
+
+  try {
+    const preference = await prisma.preferences.delete({
+      where: {
+        id: id
+      }
+    });
+
+    return new Response(JSON.stringify(preference), {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+  } catch (error) {
+    if (error instanceof Error) {
+      return new Response(JSON.stringify({ error: error.message }), {
+        status: 500,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+    } else {
+      return new Response("An unknown error occurred", {
+        status: 500
+      });
     }
   }
 }
