@@ -2,13 +2,11 @@ import { kv } from '@vercel/kv'
 
 export const runtime = 'edge'
 
-// Define the structure of a message
 interface Message {
   role: 'user' | 'assistant';
   content: string;
 }
 
-// GET route to fetch messages for a given chat ID and optional role
 export async function GET(req: Request) {
   const url = new URL(req.url);
   const chatId = url.searchParams.get("chatId");
@@ -24,11 +22,13 @@ export async function GET(req: Request) {
       return new Response("Chat not found", { status: 404 });
     }
 
+    console.log("Fetched chat data string:", chatDataString);
+
     let chatData: { messages: Message[] };
     try {
       chatData = JSON.parse(chatDataString as unknown as string);
     } catch (parseError) {
-      console.error("Error parsing chat data:", parseError);
+      console.error("Error parsing chat data:", parseError, "Data:", chatDataString);
       return new Response("Error parsing chat data", { status: 500 });
     }
 
