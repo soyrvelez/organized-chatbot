@@ -18,20 +18,14 @@ export async function GET(req: Request) {
   }
 
   try {
-    const chatDataString = await kv.hgetall(`chat:${chatId}`);
-    if (!chatDataString || Object.keys(chatDataString).length === 0) {
+    // Directly use the chat data as an object
+    const chatData = await kv.hgetall(`chat:${chatId}`);
+    if (!chatData || Object.keys(chatData).length === 0) {
       return new Response("Chat not found", { status: 404 });
     }
 
-    let chatData: { messages: Message[] };
-    try {
-      chatData = JSON.parse(chatDataString as unknown as string);
-    } catch (parseError) {
-      console.error("Error parsing chat data:", parseError);
-      return new Response("Error parsing chat data", { status: 500 });
-    }
-
-    let messages = chatData.messages;
+    // Extract messages directly from the chatData object
+    const messages: Message[] = chatData.messages;
 
     // Filter messages by role if the role parameter is provided
     if (role && ['user', 'assistant'].includes(role)) {
