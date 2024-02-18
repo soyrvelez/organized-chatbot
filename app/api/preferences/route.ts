@@ -2,8 +2,6 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export const runtime = 'edge';
-
 // Create a preference
 export async function POST(req: Request) {
   try {
