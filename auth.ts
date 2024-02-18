@@ -42,15 +42,23 @@ export const {
 })
 
 async function checkOrCreateUser(userId: string) {
-  const user = await prisma.user.findUnique({
-    where: { id: userId },
-  });
-
-  if (!user) {
-    await prisma.user.create({
-      data: {
-        id: userId,
-      },
+  try {
+    // First, try to find the user
+    let user = await prisma.user.findUnique({
+      where: { id: userId },
     });
+
+    // If the user doesn't exist, create a new one
+    if (!user) {
+      user = await prisma.user.create({
+        data: {
+          id: userId,
+        },
+      });
+    }
+
+    return user;
+  } catch (error) {
+    console.error("Failed to check or create user:", error);
   }
 }
