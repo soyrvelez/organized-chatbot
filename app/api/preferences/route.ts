@@ -102,44 +102,61 @@ export async function getPreferenceById(req: Request) {
 }
 
 // GET route to fetch all preferences by a user ID
-export async function getPreferencesByUserId(req: Request) {
+export async function GET(req: Request) {
   const url = new URL(req.url);
+  const id = url.searchParams.get("id");
   const userId = url.searchParams.get("userId");
 
-  // Validate that the user ID parameter is provided
-  if (!userId) {
-    return new Response("User ID is required", { status: 400 });
-  }
-
   try {
-    const preferences = await prisma.preferences.findMany({
-      where: {
-        userId: userId
+    // Fetch a single preference by ID
+    if (id) {
+      const preferenceId = parseInt(id, 10);
+      if (isNaN(preferenceId)) {
+        return new Response("Invalid preference ID", { status: 400 });
       }
-    });
 
-    if (!preferences || preferences.length === 0) {
-      return new Response("No preferences found for the given user", { status: 404 });
+      const preference = await prisma.preferences.findUnique({
+        where: { id: preferenceId }
+      });
+
+      if (!preference) {
+        return new Response("Preference not found", { status: 404 });
+      }
+
+      return new Response(JSON.stringify(preference), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      });
     }
 
-    return new Response(JSON.stringify(preferences), {
-      status: 200,
-      headers: {
-        'Content-Type': 'application/json'
+    // Fetch all preferences for a given user ID
+    else if (userId) {
+      const preferences = await prisma.preferences.findMany({
+        where: { userId: userId }
+      });
+
+      if (!preferences || preferences.length === 0) {
+        return new Response("No preferences found for the given user", { status: 404 });
       }
-    });
+
+      return new Response(JSON.stringify(preferences), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    // No valid query parameters provided
+    else {
+      return new Response("Query parameter 'id' or 'userId' is required", { status: 400 });
+    }
   } catch (error) {
     if (error instanceof Error) {
       return new Response(JSON.stringify({ error: error.message }), {
         status: 500,
-        headers: {
-          'Content-Type': 'application/json'
-        }
+        headers: { 'Content-Type': 'application/json' }
       });
     } else {
-      return new Response("An unknown error occurred", {
-        status: 500
-      });
+      return new Response("An unknown error occurred", { status: 500 });
     }
   }
 }
