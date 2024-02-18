@@ -2,7 +2,6 @@ import { kv } from '@vercel/kv'
 
 export const runtime = 'edge'
 
-// Define the structure of a message
 interface Message {
   role: 'user' | 'assistant';
   content: string;
@@ -23,7 +22,6 @@ export async function GET(req: Request) {
       return new Response("Chat not found", { status: 404 });
     }
 
-    // Assuming the chat data is stored as a JSON string
     let chatData: { messages: Message[] };
     try {
       chatData = JSON.parse(chatDataString as unknown as string);
