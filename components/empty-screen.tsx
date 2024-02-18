@@ -27,7 +27,7 @@ export function EmptyScreen({ setInput }: Pick<UseChatHelpers, 'setInput'>) {
           Welcome to the Organized AI Chatbot!
         </h1>
         <p className="mb-2 leading-normal text-muted-foreground">
-          This chatbot lets you interact with OpenAI's models through their API.
+          This chatbot lets you interact with OpenAI&apos;s models through their API.
         </p>
         <p className="leading-normal text-muted-foreground">
           You can start a conversation here or try the following examples:
