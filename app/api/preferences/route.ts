@@ -12,18 +12,19 @@ export async function POST(req: Request) {
   }
 
   try {
-    // Set all existing preferences for the user to inactive
-    await prisma.preferences.updateMany({
-      where: {
-        userId: userId,
-        active: true
-      },
-      data: {
-        active: false
-      }
-    });
+    if (active) {
+      // Set all existing preferences for the user to inactive
+      await prisma.preferences.updateMany({
+        where: {
+          userId: userId,
+          active: true
+        },
+        data: {
+          active: false
+        }
+      });
+    }
 
-    // Create the new preference
     const newPreference = await prisma.preferences.create({
       data: {
         title: title || "Default",
@@ -154,6 +155,67 @@ export async function DELETE(req: Request) {
     });
 
     return new Response(JSON.stringify(preference), {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+  } catch (error) {
+    if (error instanceof Error) {
+      return new Response(JSON.stringify({ error: error.message }), {
+        status: 500,
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+    } else {
+      return new Response("An unknown error occurred", {
+        status: 500
+      });
+    }
+  }
+}
+
+// PUT route to update a preference
+export async function PUT(req: Request) {
+  const body = await req.json();
+  const { id, title, preferredModel, temperature, active } = body;
+
+  if (!id) {
+    return new Response("Preference ID is required", { status: 400 });
+  }
+
+  try {
+    const existingPreference = await prisma.preferences.findUnique({ where: { id: id } });
+    if (!existingPreference) {
+      return new Response("Preference not found", { status: 404 });
+    }
+
+    if (active) {
+      // Set all other preferences for the user to inactive
+      await prisma.preferences.updateMany({
+        where: {
+          userId: existingPreference.userId,
+          id: { not: id },
+          active: true
+        },
+        data: {
+          active: false
+        }
+      });
+    }
+
+    const updatedPreference = await prisma.preferences.update({
+      where: { id: id },
+      data: {
+        title: title || existingPreference.title,
+        preferredModel: preferredModel || existingPreference.preferredModel,
+        temperature: temperature !== undefined ? temperature : existingPreference.temperature,
+        active: active !== undefined ? active : existingPreference.active
+      }
+    });
+
+    return new Response(JSON.stringify(updatedPreference), {
       status: 200,
       headers: {
         'Content-Type': 'application/json'
