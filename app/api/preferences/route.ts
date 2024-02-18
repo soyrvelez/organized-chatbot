@@ -2,8 +2,6 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export const runtime = 'edge';
-
 // View A Preference
 // View all preferences associated with users
 // View all preferences by model
