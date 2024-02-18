@@ -55,6 +55,11 @@ async function checkOrCreateUser(userId: string) {
           id: userId,
         },
       });
+      const preference = await prisma.preferences.create({
+        data: {
+          userId: userId
+        },
+      })
     }
 
     return user;
