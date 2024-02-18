@@ -52,55 +52,6 @@ export async function POST(req: Request) {
   }
 }
 
-// GET route to fetch a single preference by ID
-export async function getPreferenceById(req: Request) {
-  const url = new URL(req.url);
-  const idParam = url.searchParams.get("id");
-
-  // Validate that the ID parameter is provided
-  if (!idParam) {
-    return new Response("Preference ID is required", { status: 400 });
-  }
-
-  // Parse the ID to an integer
-  const id = parseInt(idParam, 10);
-  if (isNaN(id)) {
-    return new Response("Invalid preference ID", { status: 400 });
-  }
-
-  try {
-    const preference = await prisma.preferences.findUnique({
-      where: {
-        id: id
-      }
-    });
-
-    if (!preference) {
-      return new Response("Preference not found", { status: 404 });
-    }
-
-    return new Response(JSON.stringify(preference), {
-      status: 200,
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
-  } catch (error) {
-    if (error instanceof Error) {
-      return new Response(JSON.stringify({ error: error.message }), {
-        status: 500,
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-    } else {
-      return new Response("An unknown error occurred", {
-        status: 500
-      });
-    }
-  }
-}
-
 // GET route to fetch all preferences by a user ID
 export async function GET(req: Request) {
   const url = new URL(req.url);
