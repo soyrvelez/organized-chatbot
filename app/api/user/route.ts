@@ -155,3 +155,41 @@ export async function PUT(req: Request) {
 }
 
 // DELETE route to delete a user
+export async function DELETE(req: Request) {
+  const url = new URL(req.url);
+  const userId = url.searchParams.get("id");
+
+  // Validate that the user ID is provided
+  if (!userId) {
+    return new Response("User ID is required", { status: 400 });
+  }
+
+  try {
+    // Check if the user exists
+    const existingUser = await prisma.user.findUnique({ where: { id: userId } });
+    if (!existingUser) {
+      return new Response("User not found", { status: 404 });
+    }
+
+    // Delete the user
+    await prisma.user.delete({
+      where: { id: userId }
+    });
+
+    return new Response("User successfully deleted", {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  } catch (error) {
+    if (error instanceof Error) {
+      return new Response(JSON.stringify({ error: error.message }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    } else {
+      return new Response("An unknown error occurred", {
+        status: 500
+      });
+    }
+  }
+}
