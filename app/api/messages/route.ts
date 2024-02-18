@@ -7,29 +7,38 @@ interface Message {
   content: string;
 }
 
-interface Chat {
-  id: string;
-  messages: Message[];
-}
-
-// GET route to fetch all messages for a given chat ID
+// GET route to fetch messages for a given chat ID and an optional role
 export async function GET(req: Request) {
   const url = new URL(req.url);
   const chatId = url.searchParams.get("chatId");
+  const role = url.searchParams.get("role");
 
   if (!chatId) {
     return new Response("Chat ID is required", { status: 400 });
   }
 
   try {
-    const chatData = await kv.hgetall(`chat:${chatId}`);
-    if (!chatData || Object.keys(chatData).length === 0) {
+    const chatDataString = await kv.hgetall(`chat:${chatId}`);
+    if (!chatDataString || Object.keys(chatDataString).length === 0) {
       return new Response("Chat not found", { status: 404 });
     }
 
-    const chat: Chat = chatData as unknown as Chat;
+    let chatData: { messages: Message[] };
+    try {
+      chatData = JSON.parse(chatDataString as unknown as string);
+    } catch (parseError) {
+      console.error("Error parsing chat data:", parseError);
+      return new Response("Error parsing chat data", { status: 500 });
+    }
 
-    return new Response(JSON.stringify(chat.messages), {
+    let messages = chatData.messages;
+
+    // Filter messages by role if the role parameter is provided
+    if (role && ['user', 'assistant'].includes(role)) {
+      messages = messages.filter(message => message.role === role);
+    }
+
+    return new Response(JSON.stringify(messages), {
       status: 200,
       headers: { 'Content-Type': 'application/json' }
     });
