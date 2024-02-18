@@ -111,7 +111,47 @@ export async function POST(req: Request) {
   }
 }
 
-// PUT route to update a user
+// PUT route to update a user's ID
+export async function PUT(req: Request) {
+  try {
+    const body = await req.json();
+    const { currentId, newId } = body;
 
+    // Validate that the current and new IDs are provided
+    if (!currentId || !newId) {
+      return new Response("Both current and new User IDs are required", { status: 400 });
+    }
+
+    // Find the user to ensure it exists
+    const existingUser = await prisma.user.findUnique({ where: { id: currentId } });
+    if (!existingUser) {
+      return new Response("User not found", { status: 404 });
+    }
+
+    // Update the user's ID
+    const updatedUser = await prisma.user.update({
+      where: { id: currentId },
+      data: {
+        id: newId
+      }
+    });
+
+    return new Response(JSON.stringify(updatedUser), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  } catch (error) {
+    if (error instanceof Error) {
+      return new Response(JSON.stringify({ error: error.message }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    } else {
+      return new Response("An unknown error occurred", {
+        status: 500
+      });
+    }
+  }
+}
 
 // DELETE route to delete a user
