@@ -22,7 +22,7 @@ model Preferences {
   id             Int     @id @default(autoincrement())
   title          String  @default("Default")
   preferredModel String  @default("gpt-3.5-turbo")
-  temperature    Decimal @default(0.7)
+  temperature    Decimal @default(0.7) @db.Decimal(2,1)
   active         Boolean @default(true)
   userId         String
   user    User    @relation(fields: [userId], references: [id])
