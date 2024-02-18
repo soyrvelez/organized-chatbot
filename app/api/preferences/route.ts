@@ -2,9 +2,8 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-// View A Preference
-// View all preferences associated with users
-// View all preferences by model
+export const runtime = 'edge';
+
 // Create a preference
 export async function POST(req: Request) {
   try {
@@ -13,6 +12,14 @@ export async function POST(req: Request) {
 
     if (!userId) {
       return new Response("User ID is required", { status: 400 });
+    }
+
+    const userExists = await prisma.user.findUnique({
+      where: { id: userId }
+    });
+
+    if (!userExists) {
+      return new Response("User not found", { status: 404 });
     }
 
     const newPreference = await prisma.preferences.create({
@@ -46,5 +53,3 @@ export async function POST(req: Request) {
     }
   }
 }
-
-// Additional routes for Update preference can be added here
