@@ -86,7 +86,8 @@ export async function GET(req: Request) {
       const chatIds = await kv.zrange(`user:chat:${userId}`, 0, -1);
       const chats = [];
       for (const chatId of chatIds) {
-        const chatData = await kv.hgetall(chatId);
+        // Type assertion for chatId
+        const chatData = await kv.hgetall(chatId as string);
         chats.push(chatData);
       }
       return new Response(JSON.stringify(chats), {
