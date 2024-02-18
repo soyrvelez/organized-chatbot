@@ -2,15 +2,10 @@ import { kv } from '@vercel/kv'
 
 export const runtime = 'edge'
 
-// Define a type for your messages
+// Define the structure of a message
 interface Message {
+  role: 'user' | 'assistant';
   content: string;
-  role: 'user' | 'system';
-}
-
-// Define a type for your chat data
-interface ChatData {
-  messages: Message[];
 }
 
 // GET route to fetch messages for a given chat ID and optional role
@@ -29,11 +24,16 @@ export async function GET(req: Request) {
       return new Response("Chat not found", { status: 404 });
     }
 
-    // Parse the chat data string into an object
-    const chatData: ChatData = JSON.parse(chatDataString as unknown as string);
+    let chatData: { messages: Message[] };
+    try {
+      chatData = JSON.parse(chatDataString as unknown as string);
+    } catch (parseError) {
+      console.error("Error parsing chat data:", parseError);
+      return new Response("Error parsing chat data", { status: 500 });
+    }
+
     let messages = chatData.messages;
 
-    // Filter messages by role if role parameter is provided
     if (role) {
       messages = messages.filter(message => message.role === role);
     }
