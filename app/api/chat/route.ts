@@ -64,25 +64,38 @@ export async function POST(req: Request) {
   return new StreamingTextResponse(stream)
 }
 
+// GET route to fetch chats
 export async function GET(req: Request) {
   const url = new URL(req.url);
   const chatId = url.searchParams.get("id");
-
-  if (!chatId) {
-    return new Response("Chat ID is required", { status: 400 });
-  }
+  const userId = url.searchParams.get("userId");
 
   try {
-    const chatData = await kv.hgetall(`chat:${chatId}`);
-
-    if (!chatData || Object.keys(chatData).length === 0) {
-      return new Response("Chat not found", { status: 404 });
+    if (chatId) {
+      // Fetch a single chat by ID
+      const chatData = await kv.hgetall(`chat:${chatId}`);
+      if (!chatData || Object.keys(chatData).length === 0) {
+        return new Response("Chat not found", { status: 404 });
+      }
+      return new Response(JSON.stringify(chatData), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    } else if (userId) {
+      // Fetch all chats for a given user ID
+      const chatIds = await kv.zrange(`user:chat:${userId}`, 0, -1);
+      const chats = [];
+      for (const chatId of chatIds) {
+        const chatData = await kv.hgetall(chatId);
+        chats.push(chatData);
+      }
+      return new Response(JSON.stringify(chats), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    } else {
+      return new Response("Chat ID or User ID is required", { status: 400 });
     }
-
-    return new Response(JSON.stringify(chatData), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' }
-    });
   } catch (error) {
     if (error instanceof Error) {
       return new Response(JSON.stringify({ error: error.message }), {
