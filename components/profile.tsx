@@ -1,6 +1,4 @@
-'use client'
-import { auth } from '@/auth';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 interface Preference {
   id: number;
@@ -10,7 +8,11 @@ interface Preference {
   active: boolean;
 }
 
-const Profile = () => {
+interface ProfileProps {
+  userId: string;
+}
+
+const Profile: React.FC<ProfileProps> = ({ userId }) => {
   const [preferences, setPreferences] = useState<Preference[]>([]);
   const [isLoading, setLoading] = useState(true);
 
@@ -18,17 +20,12 @@ const Profile = () => {
     const fetchPreferences = async () => {
       try {
         setLoading(true);
-        const session = await auth();
-        if (session && session.user && session.user.id) {
-          const response = await fetch(`/api/preferences?userId=${session.user.id}`);
-          if (!response.ok) {
-            throw new Error('Failed to fetch preferences');
-          }
-          const data: Preference[] = await response.json();
-          setPreferences(data);
-        } else {
-          throw new Error('User not authenticated');
+        const response = await fetch(`/api/preferences?userId=${userId}`);
+        if (!response.ok) {
+          throw new Error('Failed to fetch preferences');
         }
+        const data: Preference[] = await response.json();
+        setPreferences(data);
       } catch (error) {
         console.error('Error fetching preferences:', error);
       } finally {
@@ -37,7 +34,7 @@ const Profile = () => {
     };
 
     fetchPreferences();
-  }, []);
+  }, [userId]);
 
   if (isLoading) {
     return <div>Loading preferences...</div>;
@@ -56,7 +53,7 @@ const Profile = () => {
               <p>Model: {preference.preferredModel}</p>
               <p>Temperature: {preference.temperature}</p>
               <p>Status: {preference.active ? 'Active' : 'Inactive'}</p>
-              {/* TODO: BUTTONS FOR PUT / DELETE */}
+              {/* Include buttons or links for editing and deleting */}
             </div>
           ))
         )}
