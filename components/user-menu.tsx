@@ -54,12 +54,11 @@ export function UserMenu({ user }: UserMenuProps) {
           <DropdownMenuItem asChild>
             <a
               href="/profile"
-              target="_blank"
+              target="_self"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-between w-full text-xs"
             >
               Profile
-              <IconExternalLink className="size-3 ml-auto" />
             </a>
           </DropdownMenuItem>
           <DropdownMenuItem
