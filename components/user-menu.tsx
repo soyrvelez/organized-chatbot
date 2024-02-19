@@ -3,7 +3,7 @@
 import Image from 'next/image'
 import { type Session } from 'next-auth'
 import { signOut } from 'next-auth/react'
-
+import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -52,14 +52,15 @@ export function UserMenu({ user }: UserMenuProps) {
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
-            <a
-              href="/profile"
-              target="_self"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-between w-full text-xs"
-            >
-              Profile
-            </a>
+            <Link href="/profile">
+              <a
+                target="_self"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-between w-full text-xs"
+              >
+                Profile
+              </a>
+            </Link>
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() =>
