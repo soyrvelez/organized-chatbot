@@ -12,7 +12,7 @@ export function LandingContent() {
       <p className="leading-7 [&:not(:first-child)]:mt-6">
         An amazing and beautiful application.
       </p>
-      <Badge variant={'default'}>Powered by Next.js' App Router</Badge>
+      <Badge variant={'default'}>Powered by Next.js&apos; App Router</Badge>
     </div>
   );
 }
