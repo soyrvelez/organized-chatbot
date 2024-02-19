@@ -1,50 +1,155 @@
-Organized Chatbot
+# `Organized Chatbot`
+A minimalist AI chatbot experience.
 
-Requirements
-Deployed (e.g. Heroku)
- Site has basic functionality related to its goal
- At least 10 GET routes (including auth)
- At least 2 POST route
- At least 2 PUT route
- At least 2 DELETE route
- Appropriate Use of Github
- README is included and is descriptive
- .gitignore properly set up
- No API keys in Github code (used a .env file)
- Multiple commits per day
- Repo up on day 1 of project week or sooner
- README has Installation Instructions
-Log in works (required: boilerplate or better)
-Sensible error messages for bad login info (boilerplate or better)
-Passwords hashed in database
-Passwords in form are input type="password" (dots)
-Password verification is checked
-Can't sneak edit/delete data that I don't own by typing in random ids
- Effort was put into design
- No broken links (server errors or 404s)
- Typing a purposely bad link renders an error ejs page
- Content is responsive to screen size changes
- No glaring alignment or grid errors
- Create a Database Schema using an ERD software
- At least 3 Models other than join tables AND user model (required)
- Relationships were set up appropriately between models
- Avoided global variables, storing data in files, etc
- No raw file/image data stored in database, etc
-At least one PUT test
- At least one DELETE test
- At least one POST test
- At least 2 GET test (index for all, show for one)
-Generally DRY code / No enormous files
- Proper indentation (or mostly pretty good!)
- Naming conventions kept
- No glaring logic errors
+## What is it?
+Customizable AI Chatbot with passworldess authentication, REST API & a minimalist UI.
+
+## Installation Instructions
+1. Fork and clone this repository.
+2. Run `npm install` from your terminal while inside of the project's directory.
+3. Set up a `.env` and add your credentials. Reference sampleenv for the required credentials as the app expects them.
+4. Recommended: Create a Vercel project and add a Vercel KB storage and a Vercel Postgres Storage. You can configure your own Postgres database as well.
+5. Run your app in your local environment `npm run dev`.
+
+## Stack Used
+- **Next.JS 14 (App Router):** Our app's Frontend and API are both built as a Next.JS project.
+- **Vercel KV:** Redis-based Key Value Storage that supports streaming features.
+- **Vercel Postgres:** PostgreSQL DB to store user information and preferences.
+- **OAuth:** Passworldess login powered by the Github provider and Next.auth.
+- **OpenAI API:** LLM powering up our chatbot.
+- **Vercel:** For seamless Next.JS deployment.
 
 
+### App Wireframes
 
-1 of
-Use of an API
- Advanced Database Relationships
- Sockets
- Data Aggregation/Scraping
- OAuth
- Other
+![Login Page](https://github.com/soyrvelez/organized-chatbot/blob/main/login.png?sanitize=true)
+![Main App](https://github.com/soyrvelez/organized-chatbot/blob/main/app.png?sanitize=true)
+
+### User Stories
+- As a user I should be able to login utilizing my Github Account
+- As a user I should be able to understand what I can do in the app.
+- As a user I should be able to send messages to a chatbot.
+- As a user I should be able to create new chats with their own message history.
+- As a user I should be able to share chats and their associated messages with other people without them getting access to my account.
+- As a user I should be able to delete chats from my history.
+- As a user I should be able to delete my entire chat history.
+- As a user I should be able to easily copy responses so I can paste them in other apps.
+- As a user I should be able to change between Light and Dark themes.
+
+### API
+The app's API allows developers to easily extend or customize endpoints where they can add or modify request logic.
+
+You can test the API using `https://organized-chatbot.vercel.app/api`
+#### auth
+`GET` and `POST` routes that enable Next.auth implementation.
+#### user
+##### Add User
+  - **Method:** `POST`
+  - **Endpoint:** `/user`
+  - **Body:**
+    ```
+    {
+      "id": "1111",
+      "createdAt": "2022-09-15T00:00:00.000Z",
+      "updatedAt": "2022-09-15T00:00:00.000Z"
+      }
+    ```
+##### User By ID
+  - **Method:** `GET`
+  - **Endpoint:** `/user?id=userId`
+##### Get users with a single preference
+  - **Method:** `GET`
+  - **Endpoint:** `/user?filter=singlePreference`
+##### Get users with multiple preferences
+  - **Method:** `GET`
+  - **Endpoint:** `/user?filter=multiplePreferences`
+
+##### Update User
+Let's you update an user's id by specifying the existing id and new id.
+  - **Method:** `PUT`
+  - **Endpoint:** `/user`
+  - **Body:**
+```
+{
+    "currentId": "1111",
+    "newId": "2222",
+}
+```
+##### Delete User
+  - **Method:** `DELETE`
+  - **Endpoint:** `/user?id=userID`
+
+#### preferences
+Allows developers to customize the behavior of the chatbot for a particular user. You can control which OpenAI model to use and how deterministic its responses should be using temperature
+##### Add Preference
+  - **Method:** `POST`
+  - **Endpoint:** `/preferences`
+  - **Body:**
+    ```
+    {
+      "title": "New Preference 1",
+      "preferredModel": "gpt-3.5-turbo",
+      "temperature": 0.1,
+      "active": true,
+      "userId": "1111"
+    }
+    ```
+##### Get Preference by Preference Id
+  - **Method:** `GET`
+  - **Endpoint:** `/preferences?id=preferenceId`
+##### Get Preferences by User Id
+Gets all preferences associated with a single user.
+  - **Method:** `GET`
+  - **Endpoint:** `/preferences?userId=userId`
+##### Get Preferences by Model
+Gets all preferences associated with a value for model.
+  - **Method:** `GET`
+  - **Endpoint:** `/preferences?model=model`
+##### Delete by ID
+  - **Method:** `DELETE`
+  - **Endpoint:** `/preferences?id=preferenceId`
+##### Update by ID
+  - **Method:** `PUT`
+  - **Endpoint:** `/preferences?id=preferenceId`
+  - **Body:**
+  ```
+  {
+  "id": 5,
+  "preferredModel": "gpt-4-0125-preview",
+  "temperature": 0.9,
+  "active": true,
+  "userId": "9901105"
+  }
+  ```
+#### chat
+##### Get chat by chat Id
+  - **Method:** `GET`
+  - **Endpoint:** `/chat?id=chatId`
+##### Get chats by User Id
+  - **Method:** `GET`
+  - **Endpoint:** `/chat?userId=userId`
+#### messages
+##### Get messages by Chat Id
+  - **Method:** `GET`
+  - **Endpoint:** `/messages?chatId=chatId`
+##### Get messages by Chat Id and Role
+This is useful when you want to analyze either only assistant or user messages from a single chat.
+  - **Method:** `GET`
+  - **Endpoint:** `/messages?chatId=chatId&role=role` (Role is either 'user' or 'assistant')
+
+#### App
+![App Page Deployed](https://github.com/soyrvelez/organized-chatbot/blob/main/app-prod.png?sanitize=true)
+
+Thanks to Next.js' App Router we can handle all of the app's functionality from a single page where we leverage different components.
+
+#### Learnings & Opportunities
+
+##### Learnings
+- Handling authentication with OAuth.
+- Working with the shadcn/ui component library.
+- Redis and Key Value Storage why and how to use it.
+- Model and API data validations.
+
+##### Opportunities
+- Building more social features for our Scene Card components.
+- Building out a public profile page for each user showcasing their creations and allowing other users to follow them.

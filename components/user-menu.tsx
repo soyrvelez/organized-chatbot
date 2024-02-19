@@ -52,7 +52,7 @@ export function UserMenu({ user }: UserMenuProps) {
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
-            <Link href="/profile">
+            {/* <Link href="/profile">
               <a
                 target="_self"
                 rel="noopener noreferrer"
@@ -60,7 +60,7 @@ export function UserMenu({ user }: UserMenuProps) {
               >
                 Profile
               </a>
-            </Link>
+            </Link> */}
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() =>
