@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+'use client'
 import { auth } from '@/auth';
+import { useEffect, useState } from 'react';
 
 interface Preference {
   id: number;
