@@ -9,7 +9,9 @@
     "preview": "next build && next start",
     "type-check": "tsc --noEmit",
     "format:write": "prettier --write \"{app,lib,components}/**/*.{ts,tsx,mdx}\" --cache",
-    "format:check": "prettier --check \"{app,lib,components}**/*.{ts,tsx,mdx}\" --cache"
+    "format:check": "prettier --check \"{app,lib,components}**/*.{ts,tsx,mdx}\" --cache",
+    "test": "jest",
+    "test:watch": "jest --watch"
   },
   "dependencies": {
     "@prisma/client": "^5.9.1",
