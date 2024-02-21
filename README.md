@@ -16,6 +16,7 @@ Customizable AI Chatbot with passworldess authentication, REST API & a minimalis
 - **Next.JS 14 (App Router):** Our app's Frontend and API are both built as a Next.JS project.
 - **Vercel KV:** Redis-based Key Value Storage that supports streaming features.
 - **Vercel Postgres:** PostgreSQL DB to store user information and preferences.
+- **Prisma:** ORM to communicate with the Postgres Storage.
 - **OAuth:** Passworldess login powered by the Github provider and Next.auth.
 - **OpenAI API:** LLM powering up our chatbot.
 - **Vercel:** For seamless Next.JS deployment.
