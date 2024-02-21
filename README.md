@@ -9,7 +9,7 @@ Customizable AI Chatbot with passworldess authentication, REST API & a minimalis
 1. Fork and clone this repository.
 2. Run `npm install` from your terminal while inside of the project's directory.
 3. Set up a `.env` and add your credentials. Reference sampleenv for the required credentials as the app expects them.
-4. Recommended: Create a Vercel project and add a Vercel KB storage and a Vercel Postgres Storage. You can configure your own Postgres database as well.
+4. Recommended: Create a Vercel project and add a Vercel KV storage and a Vercel Postgres Storage. You can configure your own Postgres database as well.
 5. Run your app in your local environment `npm run dev`.
 
 ## Stack Used
