@@ -1,3 +1,4 @@
+![Banner](https://github.com/soyrvelez/organized-chatbot/blob/main/organized-chatbot-banner.png?sanitize=true)
 # `Organized Chatbot`
 A minimalist AI chatbot experience.
 
@@ -35,6 +36,10 @@ Customizable AI Chatbot with passworldess authentication, REST API & a minimalis
 - As a user I should be able to delete my entire chat history.
 - As a user I should be able to easily copy responses so I can paste them in other apps.
 - As a user I should be able to change between Light and Dark themes.
+
+### DATABASE ERD
+![Database ERD](https://github.com/soyrvelez/organized-chatbot/blob/main/organized-chatbot-erd.png?sanitize=true)
+This project uses 2 different stores. A PostgreSQL database for users and a Redis Key Value Store for chats and messages. The Key  Value Storage is crucial to enable streaming and handle responses from the OpenAI API.
 
 ### API
 The app's API allows developers to easily extend or customize endpoints where they can add or modify request logic.
