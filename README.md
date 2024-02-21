@@ -156,5 +156,5 @@ Thanks to Next.js' App Router we can handle all of the app's functionality from 
 - Model and API data validations.
 
 ##### Opportunities
-- Building more social features for our Scene Card components.
-- Building out a public profile page for each user showcasing their creations and allowing other users to follow them.
+- Expand featureset
+- Implement solutions that allow models from different providers like Hugging Face
