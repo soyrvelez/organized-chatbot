@@ -10,7 +10,7 @@ export function LandingContent() {
         Organized Chatbot
       </h1>
       <p className="leading-7 [&:not(:first-child)]:mt-6">
-        An amazing and beautiful application.
+        Developer friendly AI Assistant.
       </p>
       <Badge variant={'default'}>Powered by Next.js&apos; App Router</Badge>
     </div>
