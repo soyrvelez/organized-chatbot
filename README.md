@@ -1,6 +1,6 @@
 ![Banner](https://github.com/soyrvelez/organized-chatbot/blob/main/organized-chatbot-banner.png?sanitize=true)
 # `Organized Chatbot`
-A minimalist AI chatbot experience.
+A minimalist AI chatbot experience for developers.
 
 ## What is it?
 Customizable AI Chatbot with passworldess authentication, REST API & a minimalist UI.
