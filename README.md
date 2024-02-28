@@ -87,6 +87,9 @@ Let's you update an user's id by specifying the existing id and new id.
 
 #### preferences
 Allows developers to customize the behavior of the chatbot for a particular user. You can control which OpenAI model to use and how deterministic its responses should be using temperature
+
+For more information about currently available models, please reference the [OpenAI API Documentation.](https://platform.openai.com/docs/models)
+
 ##### Add Preference
   - **Method:** `POST`
   - **Endpoint:** `/preferences`
